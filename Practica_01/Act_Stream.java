@@ -1,29 +1,35 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Act_Stream {
-    public static void escribir( ) throws IOException {
-        OutputStream fos = new FileOutputStream("ListaAsistencia.txt", true);
-        fos.write(0x31);
-        fos.write(50);
-        fos.write(0x0A);
+    private static final String ARCHIVO = "notas.txt";
 
-        fos.flush();
-        fos.close();
+    // Guardar la nota al final del archivo notas.txt
+    public static void guardarNota(String nota) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARCHIVO, true))) {
+            writer.write(nota);
+            writer.newLine();
+        }
     }
 
-    public static void leer() throws IOException {
-        InputStream fis = new FileInputStream("ListaAsistencia.txt");
-        int byteFile;
-        byteFile = fis.read();
-        System.out.println(byteFile);
-        fis.close();
-    }
+    // Leer todas las notas registradas en notas.txt
+    public static List<String> leerNotas() throws IOException {
+        List<String> notas = new ArrayList<>();
+        File file = new File(ARCHIVO);
+        
+        if (!file.exists()) {
+            return notas;
+        }
 
-//    public static void guardarNota (String nota) {
-//        System.out.println("guardar Nota");
-//    }
-//
-//    public static String leerNotas() {
-//        return "notas";
-//    }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                if (!linea.trim().isEmpty()) {
+                    notas.add(linea.trim());
+                }
+            }
+        }
+        return notas;
+    }
 }
